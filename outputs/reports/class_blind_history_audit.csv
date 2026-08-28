@@ -1,0 +1,10 @@
+direct_corr_feature,T7_r_feat_class1,T3_r_feat_class1,T1_r_feat_class1
+Body_Temperature_C,0.2386,0.2671,0.3048
+Udder_Temperature_C,0.2725,0.2992,0.3092
+Activity_Index,-0.1821,-0.1899,-0.2011
+Rumination_Time_min,-0.1367,-0.1379,-0.1412
+Feed_Intake_kgDM,-0.0832,-0.1003,-0.0962
+Water_Intake_L,-0.3321,-0.3546,-0.3657
+Ambient_Temperature_C,0.0254,0.0413,0.0307
+Humidity_pct,0.0358,0.0181,0.0009
+THI,0.044,0.045,0.0391

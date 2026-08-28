@@ -1,0 +1,4 @@
+Model,Test_Accuracy,Test_Precision,Test_Recall,Test_F1,Test_ROC_AUC,CV_Recall_Mean
+LogisticRegression,1.0,1.0,1.0,1.0,1.0,1.0
+RandomForest,1.0,1.0,1.0,1.0,1.0,0.9925925925925926
+XGBoost,0.99375,1.0,0.9705882352941176,0.9850746268656716,1.0,0.9925925925925926
