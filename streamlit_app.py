@@ -576,36 +576,111 @@ with tab1:
 
 # ── TAB 2: HERD SURVEILLANCE & REGIONAL RADAR ────────────────────────────────
 with tab2:
-    st.markdown('<div class="sec-title">🐄 National Dairy Herd Surveillance Radar</div>', unsafe_allow_html=True)
-    st.caption("Live aggregate health indicators across monitored demonstration dairy units.")
+    st.markdown('<div class="sec-title">🐄 National Dairy Herd Surveillance Radar & Bulk Herd Analysis</div>', unsafe_allow_html=True)
+    st.caption("Batch process an entire farm or regional dairy herd in 1 click using CSV upload or integrated dataset analysis.")
 
-    hcol1, hcol2, hcol3, hcol4 = st.columns(4)
-    with hcol1:
-        st.markdown('<div class="metric-card"><div class="metric-val">120</div><div class="metric-lbl">TOTAL MONITORED HERD</div></div>', unsafe_allow_html=True)
-    with hcol2:
-        st.markdown('<div class="metric-card" style="border-top:3px solid #059669;"><div class="metric-val" style="color:#059669;">85</div><div class="metric-lbl">LOW RISK COWS</div></div>', unsafe_allow_html=True)
-    with hcol3:
-        st.markdown('<div class="metric-card" style="border-top:3px solid #d97706;"><div class="metric-val" style="color:#d97706;">25</div><div class="metric-lbl">MEDIUM RISK COWS</div></div>', unsafe_allow_html=True)
-    with hcol4:
-        st.markdown('<div class="metric-card" style="border-top:3px solid #dc2626;"><div class="metric-val" style="color:#dc2626;">10</div><div class="metric-lbl">HIGH RISK COWS</div></div>', unsafe_allow_html=True)
+    # Bulk CSV Upload / 1-Click Herd Analysis Component
+    with st.expander("📁 Whole Herd CSV Upload & Batch AI Analysis (Process Entire Farm at Once)", expanded=True):
+        bcol1, bcol2 = st.columns([7, 5])
+        with bcol1:
+            uploaded_file = st.file_uploader("Upload Farm Dataset (CSV)", type=["csv"], help="Upload CSV containing cow sensor measurements")
+        with bcol2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            use_demo_batch = st.button("⚡ One-Click Analyze Entire Integrated Dataset (12,000 Cows)", type="primary", use_container_width=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    rcol1, rcol2 = st.columns([6, 6])
-    with rcol1:
-        st.markdown("#### Herd Risk Distribution Breakdown")
-        dist_df = pd.DataFrame({
-            "Risk Category": ["LOW", "MEDIUM", "HIGH"],
-            "Cows": [85, 25, 10]
-        }).set_index("Risk Category")
-        st.bar_chart(dist_df, height=220)
-    with rcol2:
-        st.markdown("#### Regional Environmental THI Monitoring")
-        env_df = pd.DataFrame({
-            "Region": ["North Zone", "West Zone", "Central Zone", "South Zone"],
-            "Ambient Temp (°C)": [28.5, 31.0, 29.2, 27.8],
-            "Humidity (%)": [65, 78, 70, 62]
-        }).set_index("Region")
-        st.line_chart(env_df, height=220)
+    # Process Herd Batch if file uploaded or button clicked
+    herd_df = None
+    if uploaded_file is not None:
+        try:
+            herd_df = pd.read_csv(uploaded_file)
+            st.success(f"✓ Uploaded `{uploaded_file.name}` ({len(herd_df)} cows loaded)")
+        except Exception as e:
+            st.error(f"Could not read CSV file: {e}")
+    elif use_demo_batch or st.session_state.get('batch_run', False):
+        st.session_state['batch_run'] = True
+        demo_path = os.path.join(root_dir, "data", "synthetic_bovine_mastitis_integrated_dataset.csv")
+        if os.path.exists(demo_path):
+            herd_df = pd.read_csv(demo_path)
+            st.info(f"Loaded Integrated Dataset: `{len(herd_df):,} observations`")
+
+    if herd_df is not None:
+        with st.spinner("Executing 23-Factor Vectorized Batch AI Prediction across Herd..."):
+            try:
+                batch_res_df = predict_mastitis_risk_batch(herd_df)
+                low_cnt = (batch_res_df['mastitis_risk_category'] == 'LOW').sum()
+                med_cnt = (batch_res_df['mastitis_risk_category'] == 'MEDIUM').sum()
+                high_cnt = (batch_res_df['mastitis_risk_category'] == 'HIGH').sum()
+                total_cnt = len(batch_res_df)
+
+                # Display Dynamic Metric Cards for Batch
+                hcol1, hcol2, hcol3, hcol4 = st.columns(4)
+                with hcol1:
+                    st.markdown(f'<div class="metric-card"><div class="metric-val">{total_cnt:,}</div><div class="metric-lbl">HERD TOTAL PROCESSED</div></div>', unsafe_allow_html=True)
+                with hcol2:
+                    st.markdown(f'<div class="metric-card" style="border-top:3px solid #059669;"><div class="metric-val" style="color:#059669;">{low_cnt:,} ({low_cnt/total_cnt*100:.1f}%)</div><div class="metric-lbl">LOW RISK COWS</div></div>', unsafe_allow_html=True)
+                with hcol3:
+                    st.markdown(f'<div class="metric-card" style="border-top:3px solid #d97706;"><div class="metric-val" style="color:#d97706;">{med_cnt:,} ({med_cnt/total_cnt*100:.1f}%)</div><div class="metric-lbl">MEDIUM RISK COWS</div></div>', unsafe_allow_html=True)
+                with hcol4:
+                    st.markdown(f'<div class="metric-card" style="border-top:3px solid #dc2626;"><div class="metric-val" style="color:#dc2626;">{high_cnt:,} ({high_cnt/total_cnt*100:.1f}%)</div><div class="metric-lbl">HIGH RISK COWS (ACTION NEEDED)</div></div>', unsafe_allow_html=True)
+
+                st.markdown("<br>", unsafe_allow_html=True)
+                rcol1, rcol2 = st.columns([6, 6])
+                with rcol1:
+                    st.markdown("#### Herd Risk Distribution")
+                    dist_df = pd.DataFrame({
+                        "Risk Category": ["LOW", "MEDIUM", "HIGH"],
+                        "Cows": [low_cnt, med_cnt, high_cnt]
+                    }).set_index("Risk Category")
+                    st.bar_chart(dist_df, height=240)
+                with rcol2:
+                    st.markdown("#### High-Risk Priority Action List (Top Concerns)")
+                    high_risk_table = batch_res_df[batch_res_df['mastitis_risk_category'] == 'HIGH'][
+                        [col for col in ['animal_id', 'cow_id', 'body_temperature_c', 'milk_conductivity_mS_cm', 'mastitis_probability', 'mastitis_risk_category'] if col in batch_res_df.columns]
+                    ].head(10)
+                    st.dataframe(high_risk_table, use_container_width=True, height=220)
+
+                # Export CSV button
+                csv_bytes = batch_res_df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="📥 Export Full Herd Risk Assessment Report (CSV)",
+                    data=csv_bytes,
+                    file_name="pashu_sanjeevani_herd_risk_report.csv",
+                    mime="text/csv",
+                    type="primary"
+                )
+
+            except Exception as ex:
+                st.error(f"Error processing batch prediction: {ex}")
+
+    else:
+        # Default static view
+        hcol1, hcol2, hcol3, hcol4 = st.columns(4)
+        with hcol1:
+            st.markdown('<div class="metric-card"><div class="metric-val">120</div><div class="metric-lbl">DEMO HERD TOTAL</div></div>', unsafe_allow_html=True)
+        with hcol2:
+            st.markdown('<div class="metric-card" style="border-top:3px solid #059669;"><div class="metric-val" style="color:#059669;">85</div><div class="metric-lbl">LOW RISK COWS</div></div>', unsafe_allow_html=True)
+        with hcol3:
+            st.markdown('<div class="metric-card" style="border-top:3px solid #d97706;"><div class="metric-val" style="color:#d97706;">25</div><div class="metric-lbl">MEDIUM RISK COWS</div></div>', unsafe_allow_html=True)
+        with hcol4:
+            st.markdown('<div class="metric-card" style="border-top:3px solid #dc2626;"><div class="metric-val" style="color:#dc2626;">10</div><div class="metric-lbl">HIGH RISK COWS</div></div>', unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        rcol1, rcol2 = st.columns([6, 6])
+        with rcol1:
+            st.markdown("#### Herd Risk Distribution Breakdown")
+            dist_df = pd.DataFrame({
+                "Risk Category": ["LOW", "MEDIUM", "HIGH"],
+                "Cows": [85, 25, 10]
+            }).set_index("Risk Category")
+            st.bar_chart(dist_df, height=220)
+        with rcol2:
+            st.markdown("#### Regional Environmental THI Monitoring")
+            env_df = pd.DataFrame({
+                "Region": ["North Zone", "West Zone", "Central Zone", "South Zone"],
+                "Ambient Temp (°C)": [28.5, 31.0, 29.2, 27.8],
+                "Humidity (%)": [65, 78, 70, 62]
+            }).set_index("Region")
+            st.line_chart(env_df, height=220)
 
 
 # ── TAB 3: PATHOGEN & MILK BIOMARKERS ─────────────────────────────────────────
