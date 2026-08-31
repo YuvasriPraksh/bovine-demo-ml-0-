@@ -57,10 +57,26 @@ REQUIRED_FEATURES = {
 THRESHOLD_LOW    = 0.30
 THRESHOLD_HIGH   = 0.70
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_PATH = os.path.join(BASE_DIR, 'models', 'strict_early_risk_model.pkl')
-if not os.path.exists(MODEL_PATH):
-    MODEL_PATH = 'models/strict_early_risk_model.pkl'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+CANDIDATE_MODEL_PATHS = [
+    os.path.join(BASE_DIR, 'ml', 'models', 'strict_early_risk_model.pkl'),
+    os.path.join(BASE_DIR, 'ml', 'models', 'best_model_XGBoost.pkl'),
+    os.path.join(BASE_DIR, 'models', 'strict_early_risk_model.pkl'),
+    os.path.join(BASE_DIR, 'models', 'best_model_XGBoost.pkl'),
+    'ml/models/strict_early_risk_model.pkl',
+    'ml/models/best_model_XGBoost.pkl',
+    'models/strict_early_risk_model.pkl',
+    'models/best_model_XGBoost.pkl'
+]
+
+MODEL_PATH = None
+for candidate in CANDIDATE_MODEL_PATHS:
+    if os.path.exists(candidate):
+        MODEL_PATH = candidate
+        break
+
+if MODEL_PATH is None:
+    MODEL_PATH = os.path.join(BASE_DIR, 'ml', 'models', 'strict_early_risk_model.pkl')
 
 # Human-readable labels for feature contributions in the UI
 FEATURE_LABELS = {

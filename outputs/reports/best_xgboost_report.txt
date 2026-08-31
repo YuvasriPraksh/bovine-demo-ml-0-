@@ -2,40 +2,40 @@
      OPTIMIZED XGBOOST MODEL EVALUATION REPORT     
 ====================================================
 
-Dataset Path:       data/synthetic_bovine_mastitis_integrated_dataset.csv
-Total Samples:      12000
-CV ROC-AUC Score:   0.9994
+Dataset Path:       data/processed/mastitis_dataset.csv
+Total Samples:      12006
+CV ROC-AUC Score:   0.9992
 
 Test Set Metrics:
-  Accuracy:         0.9929
-  Precision:        0.8904
+  Accuracy:         0.9904
+  Precision:        0.8553
   Recall:           0.9924
-  F1-Score:         0.9386
-  ROC-AUC:          0.9997
-  PR-AUC:           0.9953
+  F1-Score:         0.9187
+  ROC-AUC:          0.9995
+  PR-AUC:           0.9913
 
 Optimized Hyperparameters:
-  classifier__colsample_bytree: 1.0
-  classifier__learning_rate: 0.1
+  classifier__colsample_bytree: 0.8
+  classifier__learning_rate: 0.03
   classifier__max_depth: 4
-  classifier__min_child_weight: 3
-  classifier__n_estimators: 100
-  classifier__scale_pos_weight: 17.35564053537285
-  classifier__subsample: 1.0
+  classifier__min_child_weight: 1
+  classifier__n_estimators: 200
+  classifier__scale_pos_weight: 17.363288718929255
+  classifier__subsample: 0.8
 
 Top Feature Importances:
-  - milk_conductivity_mS_cm: 0.8419
-  - body_temperature_c: 0.0150
-  - activity_score: 0.0134
-  - udder_surface_temperature_c: 0.0127
-  - S_agalactiae_load_log10_cfu_equiv: 0.0115
-  - breed_Jersey_cross: 0.0101
-  - S_uberis_load_log10_cfu_equiv: 0.0098
-  - feed_intake_kg_day: 0.0097
-  - dominant_environment_pathogen_S_uberis: 0.0084
-  - rumination_min_day: 0.0083
-  - environment_total_mastitis_pathogen_load_log10: 0.0072
-  - E_coli_load_log10_cfu_equiv: 0.0060
-  - relative_humidity_pct: 0.0057
-  - dominant_environment_pathogen_K_pneumoniae: 0.0051
-  - ambient_temperature_c: 0.0047
+  - milk_conductivity_mS_cm: 0.5632
+  - udder_surface_temperature_c: 0.1384
+  - body_temperature_c: 0.0931
+  - breed_HF_cross: 0.0201
+  - previous_mastitis_history: 0.0138
+  - environment_total_mastitis_pathogen_load_log10: 0.0119
+  - hygiene_score_0_100: 0.0114
+  - S_aureus_load_log10_cfu_equiv: 0.0113
+  - chronic_disease_flag: 0.0111
+  - breed_Jersey_cross: 0.0109
+  - dominant_environment_pathogen_K_pneumoniae: 0.0107
+  - breed_Gir_cross: 0.0097
+  - milk_yield_kg_day: 0.0088
+  - ambient_temperature_c: 0.0082
+  - E_coli_load_log10_cfu_equiv: 0.0078

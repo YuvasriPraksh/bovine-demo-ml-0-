@@ -1,19 +1,13 @@
 # 🇮🇳 Pashu Sanjeevani AI — Bovine Mastitis Early-Warning & Risk Surveillance Portal
 
-> **An Enterprise-Grade, 23-Factor Machine Learning & IoT Platform for Early Prediction of Bovine Mastitis in Dairy Livestock.**
+> **An Enterprise-Grade, 23-Factor Machine Learning & IoT Platform for Early Forecasting of Bovine Mastitis in Dairy Livestock.**
 > *Department of Animal Husbandry & Dairying · Ministry of Fisheries, Animal Husbandry & Dairying (Govt. of India Inspired Prototype)*
 
-[![Live Web App](https://img.shields.io/badge/🌐_Live_App-Pashu_Sanjeevani_AI-059669.svg?style=for-the-badge&logo=streamlit&logoColor=white)](https://5aitk8wxhcznsfd2zup5a5.streamlit.app/)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18.3+-61DAFB.svg?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-Optimized-FF6F00.svg?style=for-the-badge&logo=xgboost&logoColor=white)](https://xgboost.readthedocs.io/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Pipeline-F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![Status](https://img.shields.io/badge/Status-Hardware_Ready-brightgreen.svg?style=for-the-badge)]()
-
----
-
-## 🌟 Live Demo & Web Portal
-
-🔗 **Official Deployment Link:** [https://5aitk8wxhcznsfd2zup5a5.streamlit.app/](https://5aitk8wxhcznsfd2zup5a5.streamlit.app/)
 
 ---
 
@@ -23,26 +17,99 @@
 
 Traditional detection relies on visual symptoms or somatic cell counts (SCC) after tissue inflammation has already established. **Pashu Sanjeevani AI** continuously analyzes **23 multi-dimensional indicators**—including udder surface thermography, inline milk electrical conductivity, pathogen CFU concentrations, pedometer activity, rumination time, and ambient heat stress—to forecast mastitis risk **days before clinical symptoms manifest**.
 
+> [!NOTE]
+> **Clinical Disclaimer:** This system functions strictly as a decision-support, early-warning risk prediction tool for dairy farm management and veterinary screening. It does not replace professional clinical veterinary diagnosis.
+
 ---
 
-## 🏆 Model Performance & Evaluation Benchmarks
+## 🏗️ End-to-End System Architecture
 
-Evaluated on an independent test set of **2,400 observations** (from a 12,000-cow dataset) using 5-Fold Stratified Cross-Validation hyperparameter tuning:
+```text
+[ React + Vite PWA Frontend ]
+            │  (HTTP POST /api/predict)
+            ▼
+ [ FastAPI Backend Server ]  ──► (Preloads Model at Lifespan Startup)
+            │
+            ▼
+ [ ML Preprocessing Pipeline ] (ColumnTransformer, Imputers, StandardScalers)
+            │
+            ▼
+[ Trained XGBoost Model (.pkl) ] (ml/models/strict_early_risk_model.pkl)
+            │
+            ▼
+[ Risk Prediction & Explainability ] (Probabilities, Risk Levels & Contributing Factors)
+            │
+            ▼
+ [ FastAPI Response Payload ]
+            │
+            ▼
+[ Frontend Dashboard & Early Alert ]
+```
 
-| Metric | Score | Key Result / Clinical Significance |
-|---|---|---|
-| **Test Recall (Sensitivity)** | **`99.24%`** | **Primary Safety Metric:** Caught 130 of 131 true mastitis cases (Only 1 false negative) |
-| **Test Accuracy** | **`99.29%`** | High overall herd classification accuracy |
-| **Test Precision** | **`89.04%`** | Low false alarm rate for practical dairy farm operations |
-| **Test F1-Score** | **`0.9386`** | Optimal balance between precision and sensitivity |
-| **Test ROC-AUC** | **`0.9997`** | Near-perfect mathematical class separability |
-| **Test PR-AUC** | **`0.9953`** | Robust prediction performance under class imbalance |
+---
+
+## 🏛️ Directory Structure
+
+```text
+bovine-mastitis-prediction/
+├── backend/                      # SIH FastAPI Backend Service
+│   ├── app/
+│   │   ├── config.py             # Settings, CORS, & environment variables
+│   │   ├── main.py               # FastAPI entry point & lifespan model preloader
+│   │   ├── schemas.py            # Pydantic data schemas
+│   │   ├── ml/                   # Backend Production ML Adapter (predict.py)
+│   │   ├── routes/               # API Endpoints (/api/predict, /api/animals, etc.)
+│   │   └── services/             # Data services & dataset loader (data_service.py)
+│   ├── Procfile                  # Production process file
+│   └── requirements.txt          # Backend dependencies
+│
+├── frontend/                     # SIH React + Vite Dashboard Application
+│   ├── dist/                     # Production web build bundle
+│   ├── public/                   # Manifest & PWA icons
+│   ├── package.json              # Node dependencies
+│   └── vite.config.js            # Vite configuration
+│
+├── ml/                           # Unified Machine Learning Directory
+│   ├── models/                   # Production Pre-Trained Model Artifacts (.pkl)
+│   │   ├── strict_early_risk_model.pkl
+│   │   └── best_model_XGBoost.pkl
+│   ├── src/                      # Production Core Runtime Inference Engine
+│   │   ├── predict.py            # Feature validation & tree contribution analyzer
+│   │   ├── preprocessing.py      # Scikit-learn preprocessing pipelines
+│   │   └── hardware_interface.py # IoT sensor payload ingestion handler
+│   ├── training/                 # Model Training & Hyperparameter Tuning
+│   │   ├── train.py
+│   │   ├── train_strict.py
+│   │   └── train_xgboost_best.py
+│   └── scripts/                  # Data Generation & Audit Utilities
+│       ├── generate_v2_dataset.py
+│       ├── generate_class_blind_history.py
+│       └── audit_class_blind_history.py
+│
+├── tests/                        # Automated Test Suites & Simulation Scripts
+│   ├── test_end_to_end_integration.py
+│   ├── test_predictions.py
+│   ├── test_v2_schema.py
+│   ├── simulate_sensor_input.py
+│   └── demo_scenarios.py
+│
+├── data/                         # Project Datasets
+│   ├── processed/                # Primary datasets (mastitis_dataset.csv / xlsx)
+│   └── raw/                      # Integrated raw training dataset
+│
+├── outputs/                      # Generated Evaluation Figures & Reports
+│   ├── figures/                  # Confusion matrices, ROC curves, feature importances
+│   └── reports/                  # Model evaluation reports & CSV audits
+│
+├── streamlit_app.py              # Standalone Streamlit Interactive Portal
+├── requirements.txt              # Unified Root Dependencies File
+├── render.yaml                   # Cloud Deployment Specification
+└── README.md                     # System Documentation
+```
 
 ---
 
 ## 🧬 23 Integrated Factors & Features
-
-The model evaluates a comprehensive taxonomy of 23 biological, microbial, sensor, and environmental factors:
 
 | Category | Feature Name | Description & Unit |
 |---|---|---|
@@ -64,7 +131,7 @@ The model evaluates a comprehensive taxonomy of 23 biological, microbial, sensor
 | **Environment & Hygiene** | `ambient_temperature_c` | Barn ambient temperature (°C) |
 | | `relative_humidity_pct` | Relative atmospheric humidity (%) |
 | | `hygiene_score_0_100` | Barn and udder cleanliness score (0–100) |
-| **Profile & Health History** | `breed` | Livestock breed (*Holstein Friesian*, *Gir*, *Sahiwal*) |
+| **Profile & Health History** | `breed` | Livestock breed (*Holstein Friesian*, *Jersey*, *Gir*, *Sahiwal*) |
 | | `age_years` | Animal age (Years) |
 | | `previous_mastitis_history` | Prior mastitis history (0 = No, 1 = Yes) |
 | | `vaccinated` | Vaccination protection status (0 = No, 1 = Yes) |
@@ -72,101 +139,124 @@ The model evaluates a comprehensive taxonomy of 23 biological, microbial, sensor
 
 ---
 
-## 🏛️ Web Portal Architecture (5 Interactive Tabs)
+## 📡 REST API Specification
 
-```text
-       🇮🇳 PASHU SANJEEVANI AI NATIONAL PORTAL (STREMLIT UI)
-                         │
-    ┌────────────────────┼────────────────────┬────────────────────┬────────────────────┐
-    ▼                    ▼                    ▼                    ▼                    ▼
-📊 TAB 1             🐄 TAB 2             🦠 TAB 3             📡 TAB 4             📋 TAB 5
-Pashu Diagnostic     Herd Surveillance    Pathogen & Milk      IoT Edge Gateway     Farmer SOP &
-Center (Single Cow)  & Bulk CSV Engine    Biomarker Radar      Developer Console    Helpline Contact
-```
+### `POST /api/predict`
 
-1. **📊 Pashu Diagnostic Center**: Single cow diagnostic evaluation, live animated risk probability gauge bar, top 5 AI explainability drivers (*Increases Risk* vs *Protective Factor*), vitals grid, and veterinary protocol.
-2. **🐄 Herd Surveillance & Bulk CSV Engine**: Whole-herd batch processing engine. Allows 1-click execution on 12,000-cow datasets or custom CSV uploads, displaying priority risk tables and CSV export.
-3. **🦠 Pathogen & Biomarker Radar**: Multi-strain pathogen CFU bar charts, dominant pathogen strain indicators, and milk electrical conductivity warnings.
-4. **📡 IoT Edge Gateway Console**: Real-time JSON payload inspector, formatted MQTT/REST API integration code for microcontrollers (ESP32 / Arduino / Raspberry Pi).
-5. **📋 Farmer SOP Guidelines & Helplines**: Sanitary milking SOPs, biosecurity protocols, and 24x7 Pashu Sanjeevani helpline details.
-
----
-
-## 📡 IoT & Hardware Edge Node API
-
-To stream sensor payloads from hardware microcontrollers to the AI engine:
-
-```python
-from hardware_interface import process_sensor_reading
-
-# Accept JSON string or dict directly from MQTT / HTTP POST
-json_payload = """
+#### Request Payload Example:
+```json
 {
-    "cow_id": "COW_999",
-    "body_temperature_c": 39.7,
-    "udder_surface_temperature_c": 40.1,
-    "milk_conductivity_mS_cm": 6.8,
-    "milk_yield_kg_day": 12.0,
-    "S_aureus_load_log10_cfu_equiv": 4.2
+  "animal_id": "COW_12001",
+  "breed": "Holstein_Friesian",
+  "age_years": 4.5,
+  "body_temperature_c": 39.6,
+  "udder_surface_temperature_c": 39.2,
+  "milk_conductivity_mS_cm": 5.4,
+  "milk_yield_kg_day": 12.0,
+  "hygiene_score_0_100": 45.0,
+  "ambient_temperature_c": 32.0,
+  "relative_humidity_pct": 80.0,
+  "previous_mastitis_history": 1,
+  "vaccinated": 1
 }
-"""
+```
 
-response = process_sensor_reading(json_payload)
-
-print("Risk Category:", response["risk_level"])            # "HIGH"
-print("Probability:", response["mastitis_probability"])   # 0.9996
-print("Top Factor:", response["contributing_factors"][0]) # Udder Surface Temperature
+#### Response Payload Example:
+```json
+{
+  "animal_id": "COW_12001",
+  "risk_category": "High",
+  "risk_score": 87.4,
+  "class_probabilities": {
+    "No_Risk": 8.8,
+    "Low": 3.8,
+    "Moderate": 26.2,
+    "High": 61.2
+  },
+  "top_risk_factors": [
+    {
+      "factor": "Elevated Body Temperature",
+      "feature_name": "body_temperature_c",
+      "observed_value": 39.6,
+      "impact_score": 0.82,
+      "details": "Model contribution: +0.8240 (risk)"
+    }
+  ],
+  "forecast_7d_risk_pct": 96.1,
+  "forecast_14d_risk_pct": 99.0,
+  "environmental_risk": {
+    "ambient_temperature_c": 32.0,
+    "relative_humidity_pct": 80.0,
+    "calculated_thi": 86.1,
+    "conditions_favorable_for_pathogens": true,
+    "interpretation": "Elevated heat/humidity index associates with increased bacterial proliferation risk in bedding"
+  },
+  "recommendations": [
+    "Conduct on-farm California Mastitis Test (CMT) or individual quarter conductivity check during next milking.",
+    "Isolate milk from this cow until subclinical status is cleared.",
+    "Inspect teat skin integrity, pre-dip contact time, and post-milking barrier teat dip application."
+  ],
+  "prediction": 1,
+  "mastitis_probability": 0.874,
+  "healthy_probability": 0.126,
+  "risk_level": "HIGH",
+  "risk_label": "At Risk",
+  "timestamp": "2026-08-31T22:56:30.123456"
+}
 ```
 
 ---
 
-## 🛠️ Local Installation & Setup
+## 🚀 Setup & Local Execution Instructions
 
+### 1. Environment Setup
 ```bash
-# 1. Clone Repository
+# Clone repository
 git clone https://github.com/YuvasriPraksh/bovine-demo-ml-0-.git
 cd bovine-mastitis-prediction
 
-# 2. Install Dependencies
-pip install -r requirements.txt
+# Create and activate Python virtual environment
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
 
-# 3. Launch Local Streamlit Web Application
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Run FastAPI Backend Server
+```bash
+# Start FastAPI backend (Port 8000)
+cd backend
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+Interactive Swagger API documentation will be available at: `http://localhost:8000/docs`
+
+### 3. Run Frontend App or Streamlit App
+```bash
+# Option A: Run Streamlit Portal (Port 8501)
 streamlit run streamlit_app.py
 
-# 4. Retrain & Tune XGBoost Model
-python src/train_xgboost_best.py
+# Option B: Run React Frontend (Port 5173)
+cd frontend
+npm install
+npm run dev
+```
 
-# 5. Run Hardware Integration Audit Suite
-python scratch/hardware_readiness_audit.py
+### 4. Run Automated Integration Tests
+```bash
+# Run full end-to-end integration test suite
+python -m unittest tests/test_end_to_end_integration.py
 ```
 
 ---
 
-## 📁 Repository Directory Structure
+## ☁️ Production Deployment (Render)
 
-```text
-bovine-mastitis-prediction/
-├── data/
-│   └── synthetic_bovine_mastitis_integrated_dataset.csv   # Unified 12k dataset
-├── models/
-│   ├── best_model_XGBoost.pkl                             # Optimized XGBoost pipeline
-│   └── strict_early_risk_model.pkl                       # Active inference model pipeline
-├── outputs/
-│   ├── figures/                                           # Evaluation charts & ROC/PR curves
-│   └── reports/                                           # Evaluation reports & logs
-├── src/
-│   ├── hardware_interface.py                              # Hardware/IoT JSON interface
-│   ├── predict.py                                         # ML inference engine & explainability
-│   ├── preprocessing.py                                    # Data preprocessor & alias mapping
-│   ├── test_predictions.py                                 # Scenario test verification suite
-│   └── train_xgboost_best.py                              # XGBoost hyperparameter optimizer
-├── README.md                                               # Official repository documentation
-├── requirements.txt                                        # Python dependencies
-└── streamlit_app.py                                        # Streamlit web dashboard
-```
-
----
-
-## 📜 Disclaimer & License
-
-*Pashu Sanjeevani AI is a software prototype developed for livestock AI research, IoT integration demonstration, and agricultural decision support. All datasets are synthetic representations designed to model physiological correlations.*
+The project includes a production `render.yaml` configuration file for Render deployment:
+- **Service Name:** `bovine-mastitis-backend`
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Model binaries (`ml/models/strict_early_risk_model.pkl`) and dataset assets are included in deployment.

@@ -1,0 +1,113 @@
+{
+  "model_name": "XGBoost Multi-Class Bovine Mastitis Risk Classifier",
+  "algorithm": "Extreme Gradient Boosting (XGBoost)",
+  "framework": "xgboost / scikit-learn",
+  "training_records": 9600,
+  "test_records": 2400,
+  "accuracy": 0.9079,
+  "precision": 0.9071,
+  "recall": 0.9079,
+  "f1_score": 0.9074,
+  "classes": [
+    "No_Risk",
+    "Low",
+    "Moderate",
+    "High"
+  ],
+  "confusion_matrix": [
+    [
+      1084,
+      38,
+      0,
+      0
+    ],
+    [
+      53,
+      379,
+      35,
+      0
+    ],
+    [
+      0,
+      35,
+      362,
+      32
+    ],
+    [
+      0,
+      0,
+      28,
+      354
+    ]
+  ],
+  "classification_report": {
+    "No_Risk": {
+      "precision": 0.9533861037818822,
+      "recall": 0.966131907308378,
+      "f1-score": 0.9597166888003541,
+      "support": 1122.0
+    },
+    "Low": {
+      "precision": 0.838495575221239,
+      "recall": 0.8115631691648822,
+      "f1-score": 0.8248095756256801,
+      "support": 467.0
+    },
+    "Moderate": {
+      "precision": 0.851764705882353,
+      "recall": 0.8438228438228438,
+      "f1-score": 0.8477751756440282,
+      "support": 429.0
+    },
+    "High": {
+      "precision": 0.917098445595855,
+      "recall": 0.9267015706806283,
+      "f1-score": 0.921875,
+      "support": 382.0
+    },
+    "accuracy": 0.9079166666666667,
+    "macro avg": {
+      "precision": 0.8901862076203323,
+      "recall": 0.8870548727441832,
+      "f1-score": 0.8885441100175155,
+      "support": 2400.0
+    },
+    "weighted avg": {
+      "precision": 0.9070897112969736,
+      "recall": 0.9079166666666667,
+      "f1-score": 0.907433332084366,
+      "support": 2400.0
+    }
+  },
+  "transformed_feature_names": [
+    "age_years",
+    "lactation_number",
+    "days_in_milk",
+    "previous_mastitis_history",
+    "vaccinated",
+    "chronic_disease_flag",
+    "ambient_temperature_c",
+    "relative_humidity_pct",
+    "hygiene_score_0_100",
+    "environment_total_mastitis_pathogen_load_log10",
+    "S_aureus_load_log10_cfu_equiv",
+    "S_uberis_load_log10_cfu_equiv",
+    "E_coli_load_log10_cfu_equiv",
+    "K_pneumoniae_load_log10_cfu_equiv",
+    "S_agalactiae_load_log10_cfu_equiv",
+    "milk_yield_kg_day",
+    "milk_conductivity_mS_cm",
+    "body_temperature_c",
+    "udder_surface_temperature_c",
+    "breed_Gir_cross",
+    "breed_HF_cross",
+    "breed_Jersey_cross",
+    "breed_Murrah_buffalo",
+    "breed_Sahiwal",
+    "dominant_environment_pathogen_E_coli",
+    "dominant_environment_pathogen_K_pneumoniae",
+    "dominant_environment_pathogen_S_agalactiae",
+    "dominant_environment_pathogen_S_aureus",
+    "dominant_environment_pathogen_S_uberis"
+  ]
+}

@@ -2,10 +2,17 @@ import sys
 import os
 import pandas as pd
 
-# Ensure src directory is in the path for importing predict
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Ensure ml/src directory is in the path for importing predict
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+ML_SRC_DIR = os.path.join(ROOT_DIR, "ml", "src")
+for p in [ML_SRC_DIR, ROOT_DIR]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
-from predict import predict_mastitis_risk
+try:
+    from ml.src.predict import predict_mastitis_risk
+except ImportError:
+    from predict import predict_mastitis_risk
 
 def get_risk_category(probability):
     if probability < 0.30:

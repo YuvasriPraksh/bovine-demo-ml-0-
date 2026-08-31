@@ -1,6 +1,21 @@
-﻿__pycache__/
-*.pyc
-.venv/
-venv/
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files & secrets
 .env
-.vscode/
+.env.local
+.venv/
+env/
+venv/
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+*.log
+
+# Frontend build outputs & dependencies
+frontend/node_modules/
+frontend/dist/
+.DS_Store

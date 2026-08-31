@@ -26,7 +26,17 @@ from sklearn.metrics import (
 )
 from sklearn.pipeline import Pipeline
 
-from preprocessing import load_and_filter_data, get_preprocessor, CATEGORICAL_FEATURES
+import sys
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+ML_SRC_DIR = os.path.join(ROOT_DIR, "ml", "src")
+for p in [ML_SRC_DIR, ROOT_DIR]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
+try:
+    from ml.src.preprocessing import load_and_filter_data, get_preprocessor, CATEGORICAL_FEATURES
+except ImportError:
+    from preprocessing import load_and_filter_data, get_preprocessor, CATEGORICAL_FEATURES
 
 def train_best_xgboost(data_path: str = None):
     print("=" * 60)
@@ -34,12 +44,16 @@ def train_best_xgboost(data_path: str = None):
     print("=" * 60)
     
     if data_path is None:
-        if os.path.exists('data/synthetic_bovine_mastitis_integrated_dataset.csv'):
-            data_path = 'data/synthetic_bovine_mastitis_integrated_dataset.csv'
-        elif os.path.exists('data/processed/mastitis_dataset_v2.csv'):
-            data_path = 'data/processed/mastitis_dataset_v2.csv'
-        else:
-            data_path = 'data/processed/mastitis_full_longitudinal_dataset.csv'
+        candidate_files = [
+            'data/processed/mastitis_dataset.csv',
+            'data/raw/synthetic_bovine_mastitis_integrated_dataset.csv',
+            'data/processed/mastitis_dataset_v2.csv',
+            'data/mastitis_dataset.csv',
+        ]
+        for f in candidate_files:
+            if os.path.exists(f):
+                data_path = f
+                break
             
     print(f"\n[1/5] Loading and preprocessing dataset: {data_path}")
     X, y = load_and_filter_data(data_path)

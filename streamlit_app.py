@@ -13,20 +13,25 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-# Ensure src directory is in Python path for local and Streamlit Cloud environments
+# Ensure ml/src directory is in Python path for local and deployment environments
 root_dir = os.path.dirname(os.path.abspath(__file__))
+ml_src_dir = os.path.join(root_dir, "ml", "src")
 src_dir = os.path.join(root_dir, "src")
-if src_dir not in sys.path:
-    sys.path.insert(0, src_dir)
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+
+for d in [ml_src_dir, src_dir, root_dir]:
+    if d not in sys.path:
+        sys.path.insert(0, d)
 
 try:
-    from predict import predict_mastitis_risk, predict_mastitis_risk_batch
-    from hardware_interface import process_sensor_reading
+    from ml.src.predict import predict_mastitis_risk, predict_mastitis_risk_batch
+    from ml.src.hardware_interface import process_sensor_reading
 except ImportError:
-    from src.predict import predict_mastitis_risk, predict_mastitis_risk_batch
-    from src.hardware_interface import process_sensor_reading
+    try:
+        from predict import predict_mastitis_risk, predict_mastitis_risk_batch
+        from hardware_interface import process_sensor_reading
+    except ImportError:
+        from src.predict import predict_mastitis_risk, predict_mastitis_risk_batch
+        from src.hardware_interface import process_sensor_reading
 
 # ── 1. PAGE CONFIGURATION ─────────────────────────────────────────────────────
 st.set_page_config(
