@@ -17,7 +17,7 @@ import os
 # Ensure src directory is in Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from predict import predict_mastitis_risk, REQUIRED_FEATURES
+from predict import predict_mastitis_risk, REQUIRED_FEATURES, DEFAULT_FEATURE_VALUES, ALIAS_MAP
 
 def process_sensor_reading(sensor_data):
     """
@@ -44,13 +44,22 @@ def process_sensor_reading(sensor_data):
     cow_id = payload.get("cow_id", "COW_UNKNOWN")
     timestamp = payload.get("timestamp", "N/A")
 
-    # 3. Extract model feature subset
+    # 3. Map aliases and extract model feature subset
     feature_payload = {}
     for feat in REQUIRED_FEATURES.keys():
         if feat in payload:
             feature_payload[feat] = payload[feat]
         else:
-            raise ValueError(f"Missing required feature for model prediction: '{feat}'")
+            # Check legacy alias
+            legacy_key = None
+            for leg_k, v2_k in ALIAS_MAP.items():
+                if v2_k == feat and leg_k in payload:
+                    legacy_key = leg_k
+                    break
+            if legacy_key:
+                feature_payload[feat] = payload[legacy_key]
+            else:
+                feature_payload[feat] = DEFAULT_FEATURE_VALUES.get(feat, 0.0)
 
     # 4. Invoke ML pipeline via predict_mastitis_risk
     ml_result = predict_mastitis_risk(feature_payload)

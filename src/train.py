@@ -17,8 +17,12 @@ from sklearn.metrics import (
 
 from preprocessing import load_and_filter_data, get_preprocessor
 
-def train_and_evaluate():
-    data_path = 'data/processed/mastitis_full_longitudinal_dataset.csv'
+def train_and_evaluate(data_path=None):
+    if data_path is None:
+        if os.path.exists('data/processed/mastitis_dataset_v2.csv'):
+            data_path = 'data/processed/mastitis_dataset_v2.csv'
+        else:
+            data_path = 'data/processed/mastitis_full_longitudinal_dataset.csv'
     X, y = load_and_filter_data(data_path)
     
     # Train/test split

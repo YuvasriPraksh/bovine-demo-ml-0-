@@ -2,47 +2,47 @@
 
 Dataset Information:
 Total labeled observations: 800
-Class distribution: 0=631, 1=169
+Class distribution: 0=797, 1=3
 
 --- LogisticRegression ---
-Test Accuracy:  1.0000
-Test Precision: 1.0000
+Test Accuracy:  0.9875
+Test Precision: 0.3333
 Test Recall:    1.0000  <-- FOCUS METRIC
-Test F1-score:  1.0000
+Test F1-score:  0.5000
 Test ROC-AUC:   1.0000
 Confusion Matrix:
-[[126   0]
- [  0  34]]
+[[157   2]
+ [  0   1]]
 
 --- RandomForest ---
-Test Accuracy:  1.0000
-Test Precision: 1.0000
-Test Recall:    1.0000  <-- FOCUS METRIC
-Test F1-score:  1.0000
+Test Accuracy:  0.9938
+Test Precision: 0.0000
+Test Recall:    0.0000  <-- FOCUS METRIC
+Test F1-score:  0.0000
 Test ROC-AUC:   1.0000
 Confusion Matrix:
-[[126   0]
- [  0  34]]
+[[159   0]
+ [  1   0]]
 
 --- XGBoost ---
 Test Accuracy:  0.9938
-Test Precision: 1.0000
-Test Recall:    0.9706  <-- FOCUS METRIC
-Test F1-score:  0.9851
+Test Precision: 0.0000
+Test Recall:    0.0000  <-- FOCUS METRIC
+Test F1-score:  0.0000
 Test ROC-AUC:   1.0000
 Confusion Matrix:
-[[126   0]
- [  1  33]]
+[[159   0]
+ [  1   0]]
 
 
 Top 10 Important Features for best model (LogisticRegression):
-1. Milk_Temperature (3.0967)
-2. Milk_Yield (2.2775)
-3. Water_Intake_L (0.4530)
-4. Milk_Lactose_pct (0.4357)
-5. Activity_Index (0.3194)
-6. Previous_Mastitis_History (0.3045)
-7. Udder_Temperature_C (0.3043)
-8. Body_Temperature_C (0.2866)
-9. Rumination_Time_min (0.2391)
-10. Milk_Protein_pct (0.2377)
+1. Milk_Yield (1.6164)
+2. Udder_Temperature_C (1.5923)
+3. Breed_Holstein Friesian (1.2156)
+4. Previous_Mastitis_History (1.1729)
+5. Ambient_Temperature_C (1.1131)
+6. Humidity_pct (0.9786)
+7. Body_Temperature_C (0.9728)
+8. Vaccination_Status (0.7274)
+9. Breed_Sahiwal (0.5672)
+10. Age_Years (0.5214)
