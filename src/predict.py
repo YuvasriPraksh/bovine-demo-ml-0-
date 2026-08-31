@@ -57,7 +57,10 @@ REQUIRED_FEATURES = {
 THRESHOLD_LOW    = 0.30
 THRESHOLD_HIGH   = 0.70
 
-MODEL_PATH = 'models/strict_early_risk_model.pkl'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, 'models', 'strict_early_risk_model.pkl')
+if not os.path.exists(MODEL_PATH):
+    MODEL_PATH = 'models/strict_early_risk_model.pkl'
 
 # Human-readable labels for feature contributions in the UI
 FEATURE_LABELS = {
