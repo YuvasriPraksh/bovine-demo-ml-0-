@@ -13,7 +13,7 @@ services:
         value: 3.11.9
 
   # React + Vite Frontend Static Site
-  - type: static
+  - type: static_site
     name: bovine-mastitis-frontend
     rootDir: frontend
     buildCommand: npm install && npm run build
